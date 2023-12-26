@@ -123,7 +123,7 @@ exports.forgetPassword = async(req,res)=>{
      await  sendEmail({
             email : email,
             subject : "your otp is",
-            message : otp.toString()
+            message : `Your otp is ${otp}`
         })
 
         res.status(200).json({
@@ -137,5 +137,74 @@ exports.forgetPassword = async(req,res)=>{
     console.log(error);
     
   } 
+
+}
+
+//api to verify otp
+
+exports.verifyOtp = async(req,res)=>{
+    const {email,otp} = req.body;
+    if(!email||!otp){
+        return res.status(404).json({
+            message:"Please provide email and otp"
+        })
+    }
+
+    const UserFound = await User.find({userEmail : email})
+
+    if(UserFound.length==0){
+       return res.status(404).json({
+            message : "Email don't match"
+        })
+    }
+
+    if(UserFound[0].otp !== otp) {
+         res.status(404).json({
+            message:"Otp don't match"
+        })
+    }
+    else{
+        //dispose the otp so cannot be used next time with same otp
+        UserFound[0].otp = undefined
+        await UserFound[0].save()
+        res.status(200).json({
+            message : "otp matched"
+        })
+
+
+    }
+
+}
+
+exports.resetPassword = async(req,res)=>{
+    const{email,newPassword,confirmPassword} = req.body
+    if(!email||!newPassword||!confirmPassword){
+        return res.status(400).json({
+            message:"Please provide new password"
+        })
+    }
+
+    if(newPassword!=confirmPassword){
+        return res.status(400).json({
+            message:"The new password and confirmed password don't match"
+        })
+    }
+
+    const userFound = await User.find({userEmail : email})
+    if(userFound.length==0){
+        return res.status(404).json({
+             message : "Email not registered"
+         })
+     }
+
+     userFound[0].userPassword = bcrypt.hashSync(newPassword,10)
+     await userFound[0].save();
+
+     res.status(200).json({
+        message:"password changed successfully"
+     })
+
+
+
 
 }
