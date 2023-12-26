@@ -166,6 +166,7 @@ exports.verifyOtp = async(req,res)=>{
     else{
         //dispose the otp so cannot be used next time with same otp
         UserFound[0].otp = undefined
+        UserFound[0].isOtpVerified = true;
         await UserFound[0].save()
         res.status(200).json({
             message : "otp matched"
@@ -190,15 +191,22 @@ exports.resetPassword = async(req,res)=>{
         })
     }
 
-    const userFound = await User.find({userEmail : email})
-    if(userFound.length==0){
+    const UserFound = await User.find({userEmail : email})
+    if(UserFound.length==0){
         return res.status(404).json({
              message : "Email not registered"
          })
      }
 
-     userFound[0].userPassword = bcrypt.hashSync(newPassword,10)
-     await userFound[0].save();
+     if(UserFound[0].isOtpVerified!==true){
+        return res.status(403).json({
+            message : "you cannot perform this action"
+        })
+     }
+
+     UserFound[0].userPassword = bcrypt.hashSync(newPassword,10)
+     UserFound[0].isOtpVerified = false;
+     await UserFound[0].save();
 
      res.status(200).json({
         message:"password changed successfully"
