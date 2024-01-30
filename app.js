@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const { registerUser, loginUser } = require("./controller/auth/authController");
 
 const authRoute = require("./routes/authRoute")
+const productRoute = require("./routes/productRoute")
 
 
 app.use(express.json());
@@ -32,8 +33,8 @@ app.get("/",(req,res)=>{
     })
 })
 
-app.use("",authRoute)
-
+app.use("/api",authRoute)
+app.use("/api",productRoute)
 
 
 
