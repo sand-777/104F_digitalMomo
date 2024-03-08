@@ -15,6 +15,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
 
+//telling nodejs to give access to uploads folder
+app.use(express.static("./uploads"))
+
+
 
 
 //tell node to use dotenv
