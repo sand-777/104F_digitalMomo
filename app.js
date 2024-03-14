@@ -9,6 +9,7 @@ const { registerUser, loginUser } = require("./controller/auth/authController");
 
 const authRoute = require("./routes/authRoute")
 const productRoute = require("./routes/productRoute")
+const adminUserRoute = require("./routes/adminUsersRoute")
 
 
 app.use(express.json());
@@ -39,6 +40,7 @@ app.get("/",(req,res)=>{
 
 app.use("/api",authRoute)
 app.use("/api",productRoute)
+app.use("/api",adminUserRoute)
 
 
 
