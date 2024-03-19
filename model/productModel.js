@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { reviewSchema } = require("./nextReviewModel")
 const Schema = mongoose.Schema
 
 const productSchema = new Schema({
@@ -21,7 +22,8 @@ const productSchema = new Schema({
     productStatus : {
         type : String,
         enum : ["available","unavailable"]
-    },productImage : String
+    },productImage : String,
+    reviews : [reviewSchema]
     
 },{
     timestamps : true
