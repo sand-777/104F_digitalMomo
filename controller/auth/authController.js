@@ -80,7 +80,7 @@ exports.loginUser = async (req,res)=>{
    const token = jwt.sign({id : userFound[0]._id},process.env.KEY,{expiresIn : '30d'})
     res.status(200).json({
         message : "logged in successfully",
-        token
+      data :  token
     })
    }
 

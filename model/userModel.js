@@ -6,7 +6,9 @@ const userSchema = new Schema({
     
     userEmail : {
         type : String,
-        required : [true,"Email must be provided"]
+        required : [true,"Email must be provided"],
+        unique : true,
+        lowercase : true
     },
     userPhoneNumber :{
         type: Number,
@@ -35,7 +37,8 @@ const userSchema = new Schema({
         type: Boolean,
         default : false,
         select : false
-    }
+    },
+    cart : [{type : Schema.Types.ObjectId, ref : "Product"}]
 
 },{
     timestamps:true
