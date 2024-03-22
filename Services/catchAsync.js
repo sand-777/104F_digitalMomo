@@ -9,6 +9,7 @@ module.exports = (fn) => {
             message : err.message,
             fullError: err
         })
+        
     })
    }
 
