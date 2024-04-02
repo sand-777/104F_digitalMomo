@@ -2,11 +2,16 @@ const express = require("express")
 const { connectDatabase } = require("./database/database");
 const User = require("./model/userModel");
 const app = express()
+const cors = require("cors")
+
+const {Server} = require("socket.io")
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { registerUser, loginUser } = require("./controller/auth/authController");
 
+
+
+const { registerUser, loginUser } = require("./controller/auth/authController");
 const authRoute = require("./routes/auth/authRoute")
 const productRoute = require("./routes/admin/productRoute")
 const adminUserRoute = require("./routes/admin/adminUsersRoute")
@@ -25,7 +30,9 @@ app.use(express.urlencoded({extended:true}))
 //telling nodejs to give access to uploads folder
 app.use(express.static("./uploads"))
 
-
+app.use(cors({
+    origin : '*'
+}))
 
 
 //tell node to use dotenv
@@ -61,10 +68,35 @@ app.use("/api/payment",paymentRoute)
 const PORT = process.env.PORT
 
 //listen server
-app.listen(PORT,()=>{
+
+const server = app.listen(PORT,()=>{
     console.log("Server has started at PORT " + PORT)
 })
 
+const io = new Server(server)
 
+
+
+// io.on("connection",(socket)=>{
+//  socket.on("register",async (data)=>{
+// //     const{email,phoneNumber,userName,password} = data
+// //    await User.create({
+// //     userEmail : email,
+// //     userPhoneNumber : phoneNumber,
+// //     userName : userName,
+// //     userPassword : password
+// //    })
+// //    socket.emit('response',{message : "User Registered"})
+//    io.to(socket.id).emit('response',{
+//     message : "User registered"
+//    })
+//  })
+// })
+
+function getSocketIo(){
+    return io
+}
+
+module.exports.getSocketIo = getSocketIo
 
 
